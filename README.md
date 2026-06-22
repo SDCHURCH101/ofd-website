@@ -17,7 +17,9 @@ Static, no framework. Plain HTML + CSS + a small vanilla JS file.
 
 ## Contact form
 
-The contact form on `contact.html` runs in **demo mode** (`data-demo="true"`): it validates and shows a success panel but does not send anything. To receive real submissions, wire it to a backend (Formspree, Netlify Forms, etc.) via the `action`/`method` attributes and remove `data-demo`. Instructions are in an HTML comment in `contact.html`.
+The contact form on `contact.html` submits via AJAX to **FormSubmit.co** (no account required) and emails inquiries to `properties.fairbanks@gmail.com`. The endpoint is the `data-endpoint` attribute on the form; the submit logic lives in `assets/app.js`.
+
+**One-time activation:** the first time the form is submitted from the live site, FormSubmit emails a confirmation link to `properties.fairbanks@gmail.com`. Click it once and every future submission is delivered automatically. To change the destination address, edit the `data-endpoint` URL in `contact.html`.
 
 ## Local preview
 

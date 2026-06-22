@@ -85,9 +85,11 @@
     }
   }
 
-  /* ---- contact form (demo mode) ---- */
-  var form = document.querySelector("form[data-demo]");
+  /* ---- contact form (AJAX submit to form endpoint) ---- */
+  var form = document.querySelector("form[data-endpoint]");
   if (form) {
+    var endpoint = form.getAttribute("data-endpoint");
+    var errEl = form.querySelector(".form-error");
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var ok = true;
@@ -102,13 +104,34 @@
         if (firstBad) firstBad.focus();
         return;
       }
-      form.style.display = "none";
-      var success = document.querySelector(".form-success");
-      if (success) {
-        success.classList.add("show");
-        success.setAttribute("tabindex", "-1");
-        success.focus();
+      if (errEl) errEl.style.display = "none";
+      var btn = form.querySelector("[type=submit]");
+      var btnHTML = btn ? btn.innerHTML : "";
+      if (btn) { btn.disabled = true; btn.textContent = "Sending..."; }
+
+      function showSuccess() {
+        form.style.display = "none";
+        var success = document.querySelector(".form-success");
+        if (success) {
+          success.classList.add("show");
+          success.setAttribute("tabindex", "-1");
+          success.focus();
+        }
       }
+      function showError() {
+        if (btn) { btn.disabled = false; btn.innerHTML = btnHTML; }
+        if (errEl) errEl.style.display = "block";
+      }
+
+      var payload = {};
+      new FormData(form).forEach(function (v, k) { payload[k] = v; });
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { if (r.ok) { showSuccess(); } else { showError(); } })
+        .catch(showError);
     });
     form.querySelectorAll("input,select,textarea").forEach(function (f) {
       f.addEventListener("input", function () {

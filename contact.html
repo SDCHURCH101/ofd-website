@@ -155,12 +155,17 @@
       <!-- form -->
       <div class="reveal d1">
         <!--
-          DEMO FORM: this form validates on the client and shows a success panel,
-          but does not send anything yet (data-demo="true").
-          To receive real submissions, wire it to a backend such as Formspree or
-          Netlify Forms (set the action / form attributes) and remove data-demo.
+          This form posts to FormSubmit.co (no account required) and emails
+          submissions to properties.fairbanks@gmail.com. On the FIRST submission
+          FormSubmit sends a one-time activation email to that address: click the
+          link in it once, and every future submission is delivered automatically.
+          To change the destination, edit the data-endpoint URL below.
         -->
-        <form class="form" data-demo="true" novalidate>
+        <form class="form" id="leadForm" method="POST" data-endpoint="https://formsubmit.co/ajax/properties.fairbanks@gmail.com" novalidate>
+          <input type="hidden" name="_subject" value="New leasing inquiry from the OFD, LLC website">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
           <h2 style="font-size:24px;margin-bottom:4px">Leasing inquiry</h2>
           <p style="color:var(--muted);font-size:15px;margin-bottom:22px">Tell us a bit about what you are looking for.</p>
           <div class="grid2">
@@ -208,6 +213,7 @@
           <button class="btn btn--primary" type="submit" style="width:100%">Send Inquiry
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
           <p class="form-note">By sending this form you agree to be contacted about your inquiry. We never share your information.</p>
+          <p class="form-error" role="alert" style="display:none;color:#c0392b;font-size:14px;margin-top:12px;text-align:center">Sorry, something went wrong sending your message. Please call (907) 987-2095 or email properties.fairbanks@gmail.com directly.</p>
         </form>
 
         <div class="form-success" role="status" aria-live="polite">
@@ -275,6 +281,6 @@
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ar,bn,de,el,en,es,fr,he,hi,id,it,ja,ko,nl,pa,pl,pt,ro,ru,sv,th,tl,tr,uk,vi,zh-CN,zh-TW',autoDisplay:false},'google_translate_element');}
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script src="assets/app.js?v=2"></script>
+<script src="assets/app.js?v=3"></script>
 </body>
 </html>
