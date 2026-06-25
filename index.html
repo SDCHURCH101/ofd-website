@@ -36,30 +36,52 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "RealEstateAgent",
-  "name": "OFD, LLC",
-  "description": "Locally owned commercial real estate company in Fairbanks, Alaska, offering warehouse, industrial, and downtown office space for lease.",
-  "url": "https://www.ofdllc.com/",
-  "logo": "https://www.ofdllc.com/assets/img/favicon-512.png",
-  "image": "https://www.ofdllc.com/assets/img/og-image.jpg",
-  "telephone": "+1-907-987-2095",
-  "email": "properties.fairbanks@gmail.com",
-  "areaServed": "Fairbanks, Alaska",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "300 Barnette Street, Suite 202",
-    "addressLocality": "Fairbanks",
-    "addressRegion": "AK",
-    "postalCode": "99701",
-    "addressCountry": "US"
-  },
-  "openingHoursSpecification": {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-    "opens": "09:00",
-    "closes": "17:00"
-  },
-  "founder": { "@type": "Person", "name": "Seth Church" }
+  "@graph": [
+    {
+      "@type": ["RealEstateAgent", "LocalBusiness"],
+      "@id": "https://www.ofdllc.com/#business",
+      "name": "OFD, LLC",
+      "alternateName": "OFD LLC Commercial Real Estate",
+      "description": "OFD, LLC is a locally owned commercial real estate company in Fairbanks, Alaska. OFD owns and leases warehouse, industrial, and downtown office space, including a 68,325 sq ft industrial campus on 6.17 acres at 399 Helmericks Avenue and a 17,000 sq ft, two-story downtown office building at 300 Barnette Street. The properties are managed by Fairbanks Commercial Properties.",
+      "url": "https://www.ofdllc.com/",
+      "logo": "https://www.ofdllc.com/assets/img/favicon-512.png",
+      "image": "https://www.ofdllc.com/assets/img/og-image.jpg",
+      "telephone": "+1-907-987-2095",
+      "email": "properties.fairbanks@gmail.com",
+      "priceRange": "$$",
+      "currenciesAccepted": "USD",
+      "areaServed": [
+        { "@type": "City", "name": "Fairbanks, Alaska" },
+        { "@type": "AdministrativeArea", "name": "Fairbanks North Star Borough, Alaska" }
+      ],
+      "knowsAbout": ["commercial real estate leasing", "warehouse and industrial space for lease", "downtown office space for lease", "commercial property management", "Fairbanks Alaska real estate"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "300 Barnette Street, Suite 202",
+        "addressLocality": "Fairbanks",
+        "addressRegion": "AK",
+        "postalCode": "99701",
+        "addressCountry": "US"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": 64.8466, "longitude": -147.7172 },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+        "opens": "09:00",
+        "closes": "17:00"
+      },
+      "founder": { "@type": "Person", "name": "Seth Church", "jobTitle": "Managing Member" },
+      "sameAs": ["https://www.fairbankscp.com"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.ofdllc.com/#website",
+      "url": "https://www.ofdllc.com/",
+      "name": "OFD, LLC",
+      "inLanguage": "en-US",
+      "publisher": { "@id": "https://www.ofdllc.com/#business" }
+    }
+  ]
 }
 </script>
 </head>
@@ -84,7 +106,7 @@
 <header class="header">
   <nav class="wrap nav" aria-label="Primary">
     <a class="brand" href="index.html" aria-label="OFD, LLC home">
-      <img src="assets/img/ofd-mark-navy.png" alt="OFD, LLC logo">
+      <img width="360" height="318" src="assets/img/ofd-mark-navy.png" alt="OFD, LLC logo">
       <span class="b-text"><span class="b-name">OFD, LLC</span><span class="b-sub">Commercial Real Estate</span></span>
     </a>
     <div class="nav-links" id="navlinks">
@@ -139,7 +161,7 @@
 
 <!-- hero -->
 <section class="hero">
-  <div class="hero__bg"><img src="assets/img/hero-aerial.jpg" alt="Aerial view of the OFD, LLC industrial property at 399 Helmericks Avenue in Fairbanks, Alaska"></div>
+  <div class="hero__bg"><img width="1600" height="1200" src="assets/img/hero-aerial.jpg" alt="Aerial view of the OFD, LLC industrial property at 399 Helmericks Avenue in Fairbanks, Alaska"></div>
   <div class="wrap hero__inner">
     <p class="eyebrow">Fairbanks, Alaska Commercial Real Estate</p>
     <h1>Fairbanks commercial space, <em>owned and managed locally.</em></h1>
@@ -187,7 +209,7 @@
         </ul>
       </div>
       <div class="split__media reveal d2">
-        <img src="assets/img/helmericks-int-1.jpg" alt="Open warehouse interior with concrete floor at 399 Helmericks Avenue" loading="lazy" decoding="async">
+        <img width="1600" height="1068" src="assets/img/helmericks-int-1.jpg" alt="Open warehouse interior with concrete floor at 399 Helmericks Avenue" loading="lazy" decoding="async">
         <div class="badge badge--br">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01"/></svg>
           <div><div class="b-num">83,000 SF</div><div class="b-lbl">Across two properties</div></div>
@@ -209,10 +231,10 @@
     <!-- 399 Helmericks -->
     <div class="prop reveal">
       <div class="prop__media">
-        <img class="pm-main" src="assets/img/helmericks-storage.jpg" alt="Row of warehouse bays with overhead doors at 399 Helmericks Avenue" loading="lazy" decoding="async">
+        <img width="1600" height="1610" class="pm-main" src="assets/img/helmericks-storage.jpg" alt="Row of warehouse bays with overhead doors at 399 Helmericks Avenue" loading="lazy" decoding="async">
         <div class="pm-thumbs">
-          <img src="assets/img/helmericks-int-2.jpg" alt="Warehouse bay interior at 399 Helmericks Avenue" loading="lazy" decoding="async">
-          <img src="assets/img/helmericks-aerial.jpg" alt="Aerial of the 399 Helmericks Avenue site" loading="lazy" decoding="async">
+          <img width="1600" height="1068" src="assets/img/helmericks-int-2.jpg" alt="Warehouse bay interior at 399 Helmericks Avenue" loading="lazy" decoding="async">
+          <img width="1600" height="1200" src="assets/img/helmericks-aerial.jpg" alt="Aerial of the 399 Helmericks Avenue site" loading="lazy" decoding="async">
         </div>
       </div>
       <div class="prop__body">
@@ -236,10 +258,10 @@
     <!-- 300 Barnette -->
     <div class="prop prop--rev reveal">
       <div class="prop__media">
-        <img class="pm-main" src="assets/img/barnette-exterior.jpg" alt="The 300 Barnette Street office building in downtown Fairbanks" loading="lazy" decoding="async">
+        <img width="1600" height="1200" class="pm-main" src="assets/img/barnette-exterior.jpg" alt="The 300 Barnette Street office building in downtown Fairbanks" loading="lazy" decoding="async">
         <div class="pm-thumbs">
-          <img src="assets/img/barnette-reception.jpg" alt="Reception area inside 300 Barnette Street" loading="lazy" decoding="async">
-          <img src="assets/img/barnette-conference.jpg" alt="Conference room inside 300 Barnette Street" loading="lazy" decoding="async">
+          <img width="1600" height="1200" src="assets/img/barnette-reception.jpg" alt="Reception area inside 300 Barnette Street" loading="lazy" decoding="async">
+          <img width="1400" height="1866" src="assets/img/barnette-conference.jpg" alt="Conference room inside 300 Barnette Street" loading="lazy" decoding="async">
         </div>
       </div>
       <div class="prop__body">
@@ -320,7 +342,7 @@
 
 <!-- CTA -->
 <section class="cta">
-  <div class="cta__bg"><img src="assets/img/helmericks-aerial.jpg" alt="" aria-hidden="true" loading="lazy"></div>
+  <div class="cta__bg"><img width="1600" height="1200" src="assets/img/helmericks-aerial.jpg" alt="" aria-hidden="true" loading="lazy"></div>
   <div class="wrap">
     <div class="cta__inner reveal">
       <h2>Looking for space in Fairbanks?</h2>
@@ -340,11 +362,11 @@
   <div class="wrap">
     <div class="footer__top">
       <div class="footer__brand">
-        <img src="assets/img/ofd-logo-white.png" alt="OFD, LLC">
+        <img width="760" height="575" src="assets/img/ofd-logo-white.png" alt="OFD, LLC">
         <p>Locally owned commercial real estate in Fairbanks, Alaska. Warehouse, industrial, and downtown office space, leased and managed by Fairbanks Commercial Properties.</p>
         <a class="managed-by" href="https://www.fairbankscp.com" target="_blank" rel="noopener">
           <span>Managed by</span>
-          <img src="assets/img/fcp-logo-white.png" alt="Fairbanks Commercial Properties logo">
+          <img width="620" height="155" src="assets/img/fcp-logo-white.png" alt="Fairbanks Commercial Properties logo">
         </a>
       </div>
       <div>
@@ -383,12 +405,8 @@
   </div>
 </footer>
 
-<!-- Google Translate powers the language selector -->
+<!-- Google Translate element (script loaded on demand by app.js) -->
 <div id="google_translate_element" aria-hidden="true"></div>
-<script>
-function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'ar,bn,de,el,en,es,fr,he,hi,id,it,ja,ko,nl,pa,pl,pt,ro,ru,sv,th,tl,tr,uk,vi,zh-CN,zh-TW',autoDisplay:false},'google_translate_element');}
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script src="assets/app.js?v=3"></script>
+<script src="assets/app.js?v=4" defer></script>
 </body>
 </html>

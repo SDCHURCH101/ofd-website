@@ -186,6 +186,26 @@
 
     refresh(cookieLang());
 
+    // Google Translate is loaded ONLY when a non-English translation is active
+    // (keeps the default English page free of any third-party script).
+    window.googleTranslateElementInit = function () {
+      new google.translate.TranslateElement({
+        pageLanguage: "en",
+        includedLanguages: "ar,bn,de,el,en,es,fr,he,hi,id,it,ja,ko,nl,pa,pl,pt,ro,ru,sv,th,tl,tr,uk,vi,zh-CN,zh-TW",
+        autoDisplay: false
+      }, "google_translate_element");
+    };
+    var gtLoaded = false;
+    function loadGoogleTranslate() {
+      if (gtLoaded) return;
+      gtLoaded = true;
+      var sc = document.createElement("script");
+      sc.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      sc.async = true;
+      document.body.appendChild(sc);
+    }
+    if (cookieLang() !== "en") loadGoogleTranslate();
+
     lbtn.addEventListener("click", function (e) {
       e.stopPropagation();
       var open = lmenu.classList.toggle("open");
