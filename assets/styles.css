@@ -402,14 +402,15 @@ body{top:0!important}
 .footer a{color:#aeb9cb;transition:color .2s}
 .footer a:hover{color:#fff}
 .footer__top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.1)}
-.footer__brand img{height:42px;margin-bottom:18px}
+.footer__brand img{height:42px;width:auto;margin-bottom:18px}
 .footer__brand p{color:#8b97a9;max-width:300px;font-size:14.5px}
 .managed-by{display:inline-flex;flex-direction:column;gap:9px;margin-top:22px}
 .managed-by span{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7c8699}
 .managed-by img{height:32px;width:auto;margin:0;opacity:.95;transition:opacity .2s}
 .managed-by:hover img{opacity:1}
 .mgmt-logo{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:46px 40px;box-shadow:var(--shadow-sm);text-align:center}
-.mgmt-logo img{max-width:100%;width:380px;margin:0 auto}
+.mgmt-logo img{max-width:100%;width:380px;height:auto;margin:0 auto}
+.info-block img{width:auto}
 .footer h4{color:#fff;font-family:var(--sans);font-size:13px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px;font-weight:700}
 .footer ul{list-style:none;padding:0;margin:0;display:grid;gap:11px}
 .footer__contact div{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
