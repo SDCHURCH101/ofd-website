@@ -141,7 +141,7 @@
     });
   }
 
-  /* ---- language selector (Google Translate) ---- */
+  /* ---- language selector (Google Translate, in-place, no reload) ---- */
   (function () {
     var lbtn = document.getElementById("langBtn");
     var lmenu = document.getElementById("langMenu");
@@ -149,12 +149,35 @@
     var lwrap = document.getElementById("lang");
     if (!lbtn || !lmenu || !lwrap) return;
 
+    var INCLUDED = "ar,bn,de,el,en,es,fr,he,hi,id,it,ja,ko,nl,pa,pl,pt,ro,ru,sv,th,tl,tr,uk,vi,zh-CN,zh-TW";
+
+    function saveLang(l) { try { localStorage.setItem("ofdLang", l); } catch (e) {} }
+    function storedLang() { try { return localStorage.getItem("ofdLang"); } catch (e) { return null; } }
     function cookieLang() {
       try {
         var m = document.cookie.match(/(?:^|;\s*)googtrans=\/[^\/]*\/([^;]+)/);
-        return m ? decodeURIComponent(m[1]) : "en";
-      } catch (e) { return "en"; }
+        return m ? decodeURIComponent(m[1]) : null;
+      } catch (e) { return null; }
     }
+    function currentLang() { return storedLang() || cookieLang() || "en"; }
+
+    function setCookie(lang) {
+      try {
+        var v = "/en/" + lang;
+        document.cookie = "googtrans=" + v + ";path=/";
+        var h = location.hostname.replace(/^www\./, "");
+        if (h.indexOf(".") > -1) document.cookie = "googtrans=" + v + ";path=/;domain=." + h;
+      } catch (e) {}
+    }
+    function clearCookie() {
+      try {
+        var exp = ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        document.cookie = "googtrans=;path=/" + exp;
+        var h = location.hostname.replace(/^www\./, "");
+        if (h.indexOf(".") > -1) document.cookie = "googtrans=;path=/;domain=." + h + exp;
+      } catch (e) {}
+    }
+
     function shortLabel(code) {
       code = (code || "en").toLowerCase();
       if (code === "zh-cn") return "中文";
@@ -168,43 +191,62 @@
         b.classList.toggle("active", b.getAttribute("data-lang").toLowerCase() === code);
       });
     }
-    function setCookie(val) {
-      try {
-        document.cookie = "googtrans=" + val + ";path=/";
-        var h = location.hostname.replace(/^www\./, "");
-        if (h.indexOf(".") > -1) document.cookie = "googtrans=" + val + ";path=/;domain=." + h;
-      } catch (e) {}
-    }
-    function clearCookie() {
-      try {
-        var exp = ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        document.cookie = "googtrans=;path=/" + exp;
-        var h = location.hostname.replace(/^www\./, "");
-        if (h.indexOf(".") > -1) document.cookie = "googtrans=;path=/;domain=." + h + exp;
-      } catch (e) {}
-    }
 
-    refresh(cookieLang());
-
-    // Google Translate is loaded ONLY when a non-English translation is active
-    // (keeps the default English page free of any third-party script).
+    // Google Translate is loaded only when a translation is actually needed,
+    // so the default English page still ships with no third-party script.
+    var gtLoading = false;
     window.googleTranslateElementInit = function () {
-      new google.translate.TranslateElement({
-        pageLanguage: "en",
-        includedLanguages: "ar,bn,de,el,en,es,fr,he,hi,id,it,ja,ko,nl,pa,pl,pt,ro,ru,sv,th,tl,tr,uk,vi,zh-CN,zh-TW",
-        autoDisplay: false
-      }, "google_translate_element");
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: "en", includedLanguages: INCLUDED, autoDisplay: false
+        }, "google_translate_element");
+      } catch (e) {}
     };
-    var gtLoaded = false;
-    function loadGoogleTranslate() {
-      if (gtLoaded) return;
-      gtLoaded = true;
+    function loadGT() {
+      if (gtLoading) return;
+      gtLoading = true;
       var sc = document.createElement("script");
       sc.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       sc.async = true;
+      sc.onerror = function () { gtLoading = false; };
       document.body.appendChild(sc);
     }
-    if (cookieLang() !== "en") loadGoogleTranslate();
+    // Wait for Google to inject its hidden <select.goog-te-combo>, then drive it.
+    function withCombo(cb, tries) {
+      tries = tries || 0;
+      var combo = document.querySelector(".goog-te-combo");
+      if (combo) { cb(combo); return; }
+      if (tries > 150) return; // give up after ~15s
+      setTimeout(function () { withCombo(cb, tries + 1); }, 100);
+    }
+    function translateTo(lang) {
+      loadGT();
+      withCombo(function (combo) {
+        if (combo.value !== lang) combo.value = lang;
+        combo.dispatchEvent(new Event("change"));
+        // some builds need a second nudge once the frames are ready
+        setTimeout(function () {
+          if (combo.value !== lang) { combo.value = lang; combo.dispatchEvent(new Event("change")); }
+        }, 400);
+      });
+    }
+
+    function apply(lang) {
+      lang = lang || "en";
+      refresh(lang);
+      if (lang === "en") {
+        // Revert to the untranslated page: clear state and reload clean English.
+        saveLang("en"); clearCookie();
+        location.reload();
+        return;
+      }
+      saveLang(lang); setCookie(lang);
+      translateTo(lang);
+    }
+
+    refresh(currentLang());
+    // Re-apply the visitor's chosen language when they open another page.
+    if (currentLang() !== "en") { setCookie(currentLang()); translateTo(currentLang()); }
 
     lbtn.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -212,28 +254,17 @@
       lbtn.setAttribute("aria-expanded", open ? "true" : "false");
     });
     document.addEventListener("click", function (e) {
-      if (!lwrap.contains(e.target)) {
-        lmenu.classList.remove("open");
-        lbtn.setAttribute("aria-expanded", "false");
-      }
+      if (!lwrap.contains(e.target)) { lmenu.classList.remove("open"); lbtn.setAttribute("aria-expanded", "false"); }
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { lmenu.classList.remove("open"); lbtn.setAttribute("aria-expanded", "false"); }
     });
-
     lmenu.addEventListener("click", function (e) {
       var b = e.target.closest("[data-lang]");
       if (!b) return;
-      var lang = b.getAttribute("data-lang");
       lmenu.classList.remove("open");
       lbtn.setAttribute("aria-expanded", "false");
-      if (lang === "en") { clearCookie(); location.reload(); return; }
-      // Persist the choice in the googtrans cookie and reload. The Google
-      // Translate element reads this cookie on load and translates the page
-      // (works on a live site; cookies are blocked in some preview sandboxes).
-      setCookie("/en/" + lang);
-      refresh(lang);
-      location.reload();
+      apply(b.getAttribute("data-lang"));
     });
   })();
 

@@ -457,6 +457,17 @@ body{top:0!important}
   .hero__chips .chip:nth-child(n+4){display:none}
 }
 
+/* ---------- small phones: keep header (logo + language + menu) on one row ---------- */
+@media(max-width:560px){
+  .nav{gap:10px}
+  .brand{gap:9px}
+  .brand .b-sub{display:none}
+  .brand .b-name{font-size:19px}
+  .nav-cta{gap:8px}
+  .lang__btn{padding:8px 10px;gap:6px;font-size:12.5px}
+  .lang__menu{min-width:184px;max-height:min(344px,70vh)}
+}
+
 /* ---------- reduced motion ---------- */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
