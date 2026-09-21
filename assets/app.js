@@ -213,7 +213,34 @@
       if (tries > 150) return; // give up after ~15s
       setTimeout(function () { withCombo(cb, tries + 1); }, 100);
     }
+    // A small "Translating…" toast, so Google's (sometimes multi-second) delay
+    // reads as work in progress rather than a dead button. It hides itself as
+    // soon as Google starts swapping text, or after a safety timeout.
+    function showTranslating() {
+      var t = document.getElementById("xlateToast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "xlateToast";
+        t.className = "xlate-toast notranslate";
+        t.setAttribute("translate", "no");
+        t.innerHTML = '<span class="xlate-spin" aria-hidden="true"></span><span>Translating…</span>';
+        document.body.appendChild(t);
+      }
+      t.classList.add("show");
+      var done = false, mo, to;
+      function hide() { if (done) return; done = true; t.classList.remove("show"); if (mo) mo.disconnect(); clearTimeout(to); }
+      try {
+        mo = new MutationObserver(function (muts) {
+          for (var i = 0; i < muts.length; i++) {
+            if (muts[i].addedNodes && muts[i].addedNodes.length) { setTimeout(hide, 700); return; }
+          }
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+      } catch (e) {}
+      to = setTimeout(hide, 18000);
+    }
     function translateTo(lang) {
+      showTranslating();
       loadGT();
       withCombo(function (combo) {
         function set() { combo.value = lang; combo.dispatchEvent(new Event("change")); }

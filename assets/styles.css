@@ -170,6 +170,12 @@ p{margin:0 0 1em}
 .lang__menu button:hover{background:var(--surface-2);color:var(--navy)}
 .lang__menu button.active{background:var(--brass-soft);color:#806616;font-weight:600}
 
+/* "Translating…" toast shown while Google Translate works */
+.xlate-toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:999px;font-family:var(--sans);font-size:14px;font-weight:600;box-shadow:0 10px 30px -8px rgba(10,18,34,.55);opacity:0;pointer-events:none;z-index:200;transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.xlate-toast.show{opacity:1;transform:translate(-50%,0)}
+.xlate-spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:xlate-spin .7s linear infinite}
+@keyframes xlate-spin{to{transform:rotate(360deg)}}
+
 /* hide Google Translate injected chrome */
 .goog-te-banner-frame,.goog-te-gadget-icon,#goog-gt-tt,.goog-te-balloon-frame{display:none!important}
 .goog-te-gadget{height:0;overflow:hidden;font-size:0!important;line-height:0!important}
