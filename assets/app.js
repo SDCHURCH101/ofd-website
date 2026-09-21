@@ -153,28 +153,21 @@
 
     function saveLang(l) { try { localStorage.setItem("ofdLang", l); } catch (e) {} }
     function storedLang() { try { return localStorage.getItem("ofdLang"); } catch (e) { return null; } }
-    function cookieLang() {
-      try {
-        var m = document.cookie.match(/(?:^|;\s*)googtrans=\/[^\/]*\/([^;]+)/);
-        return m ? decodeURIComponent(m[1]) : null;
-      } catch (e) { return null; }
-    }
-    function currentLang() { return storedLang() || cookieLang() || "en"; }
+    function currentLang() { return storedLang() || "en"; }
 
-    function setCookie(lang) {
-      try {
-        var v = "/en/" + lang;
-        document.cookie = "googtrans=" + v + ";path=/";
-        var h = location.hostname.replace(/^www\./, "");
-        if (h.indexOf(".") > -1) document.cookie = "googtrans=" + v + ";path=/;domain=." + h;
-      } catch (e) {}
-    }
-    function clearCookie() {
+    // Google Translate re-sets its own "googtrans" cookie whenever it translates.
+    // If that cookie is already present when Google initializes, it pre-selects
+    // the language and flags the page "translated" WITHOUT swapping any text, and
+    // later combo changes are then ignored. So we never rely on that cookie for
+    // state, and we clear it before Google loads — translation is driven only by
+    // the combo, starting from English every time.
+    function clearGoogleCookie() {
       try {
         var exp = ";expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        var host = location.hostname, bare = host.replace(/^www\./, "");
         document.cookie = "googtrans=;path=/" + exp;
-        var h = location.hostname.replace(/^www\./, "");
-        if (h.indexOf(".") > -1) document.cookie = "googtrans=;path=/;domain=." + h + exp;
+        document.cookie = "googtrans=;path=/;domain=" + host + exp;
+        if (bare.indexOf(".") > -1) document.cookie = "googtrans=;path=/;domain=." + bare + exp;
       } catch (e) {}
     }
 
@@ -223,16 +216,14 @@
     function translateTo(lang) {
       loadGT();
       withCombo(function (combo) {
-        function set(v) { combo.value = v; combo.dispatchEvent(new Event("change")); }
-        // Google may pre-select the language from its own cookie and flag the
-        // page "translated" before it actually swaps any text; a change event on
-        // that unchanged value is then ignored. Reset to the source language
-        // first so the move to the target is always a real, applied transition.
-        if (combo.value === lang) set("");
-        setTimeout(function () { set(lang); }, 60);
-        // Re-nudge in case the first attempt landed before Google finished
-        // wiring up its translate frames.
-        setTimeout(function () { if (combo.value !== lang) set(lang); }, 800);
+        function set() { combo.value = lang; combo.dispatchEvent(new Event("change")); }
+        // The combo starts on English (Google's cookie was cleared before it
+        // loaded), so selecting the target is always a real, applied change.
+        set();
+        // Re-nudge a couple of times in case the first attempt landed before
+        // Google finished wiring up its translate frames.
+        setTimeout(function () { if (combo.value !== lang) set(); }, 500);
+        setTimeout(function () { if (combo.value !== lang) set(); }, 1200);
       });
     }
 
@@ -241,17 +232,19 @@
       refresh(lang);
       if (lang === "en") {
         // Revert to the untranslated page: clear state and reload clean English.
-        saveLang("en"); clearCookie();
+        saveLang("en"); clearGoogleCookie();
         location.reload();
         return;
       }
-      saveLang(lang); setCookie(lang);
+      saveLang(lang);
       translateTo(lang);
     }
 
+    // Clear any stale Google cookie up front so the widget can't start in a
+    // half-applied state, then restore the visitor's language on this page.
+    clearGoogleCookie();
     refresh(currentLang());
-    // Re-apply the visitor's chosen language when they open another page.
-    if (currentLang() !== "en") { setCookie(currentLang()); translateTo(currentLang()); }
+    if (currentLang() !== "en") translateTo(currentLang());
 
     lbtn.addEventListener("click", function (e) {
       e.stopPropagation();
