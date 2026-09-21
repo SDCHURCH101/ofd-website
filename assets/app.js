@@ -220,23 +220,19 @@
       if (tries > 150) return; // give up after ~15s
       setTimeout(function () { withCombo(cb, tries + 1); }, 100);
     }
-    function isTranslated() { return /\btranslated\b/.test(document.documentElement.className); }
     function translateTo(lang) {
       loadGT();
       withCombo(function (combo) {
-        function fire() { combo.value = lang; combo.dispatchEvent(new Event("change")); }
-        // If Google pre-selected this language from its own cookie but has not
-        // applied it yet, a change event on the unchanged value is ignored, so
-        // force a real transition (English -> target).
-        if (combo.value === lang && !isTranslated()) {
-          combo.value = ""; combo.dispatchEvent(new Event("change"));
-          setTimeout(fire, 40);
-        } else {
-          fire();
-        }
-        // Re-nudge once the translate frames are ready, in case the first
-        // attempt landed before Google finished wiring up.
-        setTimeout(function () { if (combo.value !== lang || !isTranslated()) fire(); }, 700);
+        function set(v) { combo.value = v; combo.dispatchEvent(new Event("change")); }
+        // Google may pre-select the language from its own cookie and flag the
+        // page "translated" before it actually swaps any text; a change event on
+        // that unchanged value is then ignored. Reset to the source language
+        // first so the move to the target is always a real, applied transition.
+        if (combo.value === lang) set("");
+        setTimeout(function () { set(lang); }, 60);
+        // Re-nudge in case the first attempt landed before Google finished
+        // wiring up its translate frames.
+        setTimeout(function () { if (combo.value !== lang) set(lang); }, 800);
       });
     }
 
